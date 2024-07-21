@@ -4,3 +4,15 @@ GET {{SpeakersService_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+POST {{SpeakersService_HostAddress}}/api/speakers
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "johndoe@example.com",
+    "bio": "Some bio information",
+    "createdAt": "2022-01-01T00:00:00Z"
+}

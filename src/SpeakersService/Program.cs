@@ -4,6 +4,8 @@ namespace SpeakersService;
 using CommonComponents;
 using CommonComponents.MassTransit;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using SpeakersService.Data;
 
 public class Program
 {
@@ -11,12 +13,25 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Setup some defaults used in all services
-        CommonApiBuilder.Configure(builder);
-
-        builder.Services.AddServiceBus(builder.Configuration, cfg => {
+        builder.Services.AddServiceBus(builder.Configuration, cfg =>
+        {
             cfg.AddConsumers(typeof(Program).Assembly);
         });
+
+        builder.Services.AddDbContext<SpeakerDbContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
+
+        builder.Services.AddMediatR(cfg => {
+            cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+        });
+
+        builder.Services.AddControllers();
+
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
 
