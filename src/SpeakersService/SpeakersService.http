@@ -1,0 +1,6 @@
+@SpeakersService_HostAddress = http://localhost:5034
+
+GET {{SpeakersService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,6 @@
+@SpeakerApp.BFF_HostAddress = http://localhost:5287
+
+GET {{SpeakerApp.BFF_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

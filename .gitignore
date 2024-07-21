@@ -1,0 +1,21 @@
+# VS Code
+.vscode/
+
+# .NET
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.userprefs
+*.vscode
+
+# C#
+*.csproj.user
+*.sln.docstates
+
+# React
+node_modules/
+build/
+dist/
+.cache/

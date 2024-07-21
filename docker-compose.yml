@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: masstransit/rabbitmq:latest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "SuperSecret123!"
+      ACCEPT_EULA: "Y"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    ports:
+      - "4317:4317"
+      - "55680:55680"
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./otel-config/prometheus.yml:/etc/prometheus/prometheus.yml
