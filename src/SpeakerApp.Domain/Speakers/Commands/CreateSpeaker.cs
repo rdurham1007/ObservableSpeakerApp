@@ -4,10 +4,10 @@ namespace SpeakerApp.Domain.Speakers.Commands
 {
     public record CreateSpeaker
     {
-        public virtual string FirstName { get; init; }
-        public virtual string LastName { get; init; }
-        public virtual string Email { get; init; }
-        public virtual string Bio { get; init; }
+        public virtual string FirstName { get; init; } = string.Empty;
+        public virtual string LastName { get; init; } = string.Empty;
+        public virtual string Email { get; init; } = string.Empty;
+        public virtual string Bio { get; init; } = string.Empty;
         public virtual DateTime CreatedAt { get; init; }
     }
 

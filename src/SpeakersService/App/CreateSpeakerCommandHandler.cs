@@ -23,7 +23,7 @@ namespace SpeakersService.App
             _dbContext = dbContext;
         }
 
-        public async Task<CreateSpeakerCommandResponse> Handle(CreateSpeakerCommand request, CancellationToken cancellationToken)
+        public Task<CreateSpeakerCommandResponse> Handle(CreateSpeakerCommand request, CancellationToken cancellationToken)
         {   
             var speaker = new SpeakerRecord
             {
@@ -37,7 +37,7 @@ namespace SpeakersService.App
 
             _dbContext.Speakers.Add(speaker);
 
-            return new CreateSpeakerCommandResponse
+            return Task.FromResult(new CreateSpeakerCommandResponse
             {
                 FirstName = speaker.FirstName,
                 LastName = speaker.LastName,
@@ -45,7 +45,7 @@ namespace SpeakersService.App
                 Bio = speaker.Bio,
                 CreatedAt = speaker.CreatedAt,
                 Id = speaker.Id
-            };
+            });
         }
     }
 }
