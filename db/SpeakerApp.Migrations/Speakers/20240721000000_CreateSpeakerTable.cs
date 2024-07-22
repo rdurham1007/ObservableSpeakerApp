@@ -13,7 +13,8 @@ namespace SpeakerApp.Migrations.Speakers
                 .WithColumn("FirstName").AsString(100).NotNullable()
                 .WithColumn("Lastname").AsString(100).NotNullable()
                 .WithColumn("Email").AsString(100).NotNullable()
-                .WithColumn("Bio").AsString(250).NotNullable();
+                .WithColumn("Bio").AsString(250).NotNullable()
+                .WithColumn("CreatedAt").AsDateTime().NotNullable();
         }
 
         public override void Down()

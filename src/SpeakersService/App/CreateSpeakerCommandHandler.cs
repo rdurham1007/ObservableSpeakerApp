@@ -23,7 +23,7 @@ namespace SpeakersService.App
             _dbContext = dbContext;
         }
 
-        public Task<CreateSpeakerCommandResponse> Handle(CreateSpeakerCommand request, CancellationToken cancellationToken)
+        public async Task<CreateSpeakerCommandResponse> Handle(CreateSpeakerCommand request, CancellationToken cancellationToken)
         {   
             var speaker = new SpeakerRecord
             {
@@ -35,9 +35,10 @@ namespace SpeakersService.App
                 Id = Guid.NewGuid()
             };
 
-            _dbContext.Speakers.Add(speaker);
+            await _dbContext.Speakers.AddAsync(speaker, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return Task.FromResult(new CreateSpeakerCommandResponse
+            return new CreateSpeakerCommandResponse
             {
                 FirstName = speaker.FirstName,
                 LastName = speaker.LastName,
@@ -45,7 +46,7 @@ namespace SpeakersService.App
                 Bio = speaker.Bio,
                 CreatedAt = speaker.CreatedAt,
                 Id = speaker.Id
-            });
+            };
         }
     }
 }

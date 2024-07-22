@@ -1,13 +1,19 @@
 
 namespace SpeakerApp.BFF;
 
+using CommonComponents.MassTransit;
+using MassTransit;
+
 public class Program
 {
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        builder.Services.AddServiceBus(builder.Configuration, cfg =>
+        {
+            cfg.AddConsumers(typeof(Program).Assembly);
+        });
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
