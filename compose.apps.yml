@@ -60,6 +60,26 @@ services:
       - .env
     networks:
       - shared-network
+  presentations-service:
+    build:
+      context: .
+      dockerfile: src/PresentationsService/Dockerfile
+      target: final
+    ports:
+      - 5255:8080
+    environment:
+      - MassTransit__HOST=${RMQ_HOST}
+      - ConnectionStrings__DefaultConnection=Server=${SQL_HOST};Database=SpeakerApp;User Id=${SQL_USR};Password=${SQL_PWD};TrustServerCertificate=true;
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP__ENDPOINT=http://otel-collector:4317
+    develop:
+      watch:
+        - action: rebuild
+          path: src/PresentationsService
+    env_file:
+      - .env
+    networks:
+      - shared-network
 
 networks:
   shared-network:

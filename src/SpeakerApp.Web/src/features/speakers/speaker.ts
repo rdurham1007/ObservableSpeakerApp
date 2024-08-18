@@ -1,8 +1,7 @@
 export interface Speaker {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   bio: string;
   email: string;
-  createdAt: string;
 }

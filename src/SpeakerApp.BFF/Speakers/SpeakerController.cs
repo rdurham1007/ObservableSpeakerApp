@@ -35,7 +35,7 @@ namespace SpeakerApp.BFF.Speakers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSpeaker(CreateSpeakerModel model)
+        public async Task<IActionResult> CreateSpeaker(CreateEditSpeakerModel model)
         {
             var client = _bus.CreateRequestClient<CreateSpeaker>();
 

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getSpeakers } from "./speakerService";
 import { Speaker } from "./speaker";
 import Layout from "../layout/Layout";
-import TalksList from "../talks/talksList";
+import TalksList from "../talks/TalksList";
 
 interface SpeakerDetailProps {}
 

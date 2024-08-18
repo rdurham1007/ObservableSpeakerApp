@@ -26,7 +26,8 @@ namespace TalksService.Service.Consumers
                 Id = command.Id,
                 Title = command.Title,
                 Abstract = command.Abstract,
-                SpeakerId = command.Speaker,
+                SpeakerId = command.SpeakerId,
+                SpeakerName = command.SpeakerName,
                 CreatedAt = command.Created
             };
 

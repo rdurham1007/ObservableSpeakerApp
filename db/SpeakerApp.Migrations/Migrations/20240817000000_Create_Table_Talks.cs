@@ -12,6 +12,7 @@ namespace SpeakerApp.Migrations
                 .WithColumn("Title").AsString(100).NotNullable()
                 .WithColumn("Abstract").AsString(500).NotNullable()
                 .WithColumn("SpeakerId").AsGuid().NotNullable()
+                .WithColumn("SpeakerName").AsString(100).NotNullable()
                 .WithColumn("CreatedAt").AsDateTime().NotNullable();
 
             Insert.IntoTable("Talks")
@@ -21,6 +22,7 @@ namespace SpeakerApp.Migrations
                     Title = "Sample Talk",
                     Abstract = "This is a sample talk",
                     SpeakerId = Guid.Parse("f4b3b2b1-2f8d-4b9b-8b1e-7b0e4e3d2c1a"),
+                    SpeakerName = "Russell Durham",
                     CreatedAt = DateTime.Now
                 });
         }

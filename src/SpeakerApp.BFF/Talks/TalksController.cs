@@ -5,6 +5,7 @@ namespace SpeakerApp.BFF.Talks
     using System.Threading.Tasks;
     using MassTransit;
     using Microsoft.AspNetCore.Mvc;
+    using SpeakerApp.Domain.Speakers.Commands;
     using SpeakerApp.Domain.Talks;
 
     [Route("api/[controller]")]
@@ -27,10 +28,25 @@ namespace SpeakerApp.BFF.Talks
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateTalkResult>> Post(CreateTalk command)
+        public async Task<ActionResult<CreateTalkResult>> Post(CreateEditTalkViewModel talk)
         {
-            var requestClient = _serviceBus.CreateRequestClient<CreateTalk>();
-            var response = await requestClient.GetResponse<CreateTalkResult>(command);
+            if(talk.Speaker.Id == null)
+            {
+                var requestClient = _serviceBus.CreateRequestClient<CreateSpeaker>();
+                var speakerResponse = await requestClient.GetResponse<CreateSpeakerResult>(new CreateSpeaker
+                {
+                    FirstName = talk.Speaker.FirstName,
+                    LastName = talk.Speaker.LastName,
+                    Email = talk.Speaker.Email,
+                    Bio = talk.Speaker.Bio,
+                    CreatedAt = DateTime.UtcNow
+                });
+
+                talk.Speaker.Id = speakerResponse.Message.Id;
+            }
+
+            var talkClient = _serviceBus.CreateRequestClient<CreateTalk>();
+            var response = await talkClient.GetResponse<CreateTalkResult>(talk);
             return Ok(response.Message);
         }
 

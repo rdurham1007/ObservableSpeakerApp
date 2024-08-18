@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Speaker } from './speaker';
-import { Modal, Form, Button } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
+import CreateSpeakerForm from './CreateSpeakerForm';
 
 interface AddSpeakerModalProps {
   show: boolean;
@@ -9,15 +10,12 @@ interface AddSpeakerModalProps {
 }
 
 const AddSpeakerModal: React.FC<AddSpeakerModalProps> = ({ show, onClose, onSave }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [bio, setBio] = useState('');
+
+  const [speaker, setSpeaker] = useState<Speaker>({ id: "", firstName: "", lastName: "", bio: "", email: ""});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newSpeaker: Speaker = { id: "", firstName, lastName, bio, email: "", createdAt:"" }; // id will be set by the backend
-    onSave(newSpeaker);
+    onSave(speaker);
   };
 
   if (!show) {
@@ -30,44 +28,7 @@ const AddSpeakerModal: React.FC<AddSpeakerModalProps> = ({ show, onClose, onSave
         <Modal.Title>Add Speaker</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group>
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Bio</Form.Label>
-            <Form.Control
-              as="textarea"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              required
-            />
-          </Form.Group>
-        </Form>
+        <CreateSpeakerForm speakerData={speaker} onSpeakerChange={(updatedSpeaker) => setSpeaker(updatedSpeaker)} />
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={handleSubmit}>Save</Button>

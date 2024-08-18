@@ -43,7 +43,8 @@ namespace TalksService.Service.Consumers
                     Id = t.Id,
                     Title = t.Title,
                     Abstract = t.Abstract,
-                    Speaker = t.SpeakerId
+                    SpeakerId = t.SpeakerId,
+                    SpeakerName = t.SpeakerName
                 }).ToList()
             };
 

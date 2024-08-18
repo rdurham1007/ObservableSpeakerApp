@@ -59,7 +59,7 @@ public class Program
 
         // Correctly resolve the logger
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("SpeakerService Endpoint: {Endpoint}", otlpEndpoint);
+        logger.LogInformation("OTLP Endpoint: {Endpoint}", otlpEndpoint);
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
