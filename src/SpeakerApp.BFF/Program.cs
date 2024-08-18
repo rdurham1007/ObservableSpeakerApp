@@ -3,6 +3,9 @@ namespace SpeakerApp.BFF;
 
 using CommonComponents.MassTransit;
 using MassTransit;
+using MassTransit.Logging;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 public class Program
 {
@@ -14,6 +17,22 @@ public class Program
         {
             cfg.AddConsumers(typeof(Program).Assembly);
         });
+
+        var otlpEndpoint = builder.Configuration["OTLP:Endpoint"] ?? "http://localhost:4317";
+
+        builder.Services.AddOpenTelemetry()
+            .ConfigureResource((resourceBuilder) =>
+            {
+                resourceBuilder.AddService(builder.Configuration["OTLP:ServiceName"] ?? "SpeakerApp.BFF");
+            })
+            .WithTracing(tracing => {
+                tracing.AddAspNetCoreInstrumentation();
+                tracing.AddSource(DiagnosticHeaders.DefaultListenerName);
+                tracing.AddOtlpExporter(cfg => {
+                    cfg.Endpoint = new Uri(otlpEndpoint);
+                    cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+                });
+            });
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

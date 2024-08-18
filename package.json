@@ -1,0 +1,22 @@
+{
+  "name": "observablespeakerapp",
+  "version": "1.0.0",
+  "description": "A sample app for working with observable .net applications",
+  "main": "index.js",
+  "scripts": {
+    "migrations": "dotnet run --project ./db/SpeakerApp.Migrations/SpeakerApp.Migrations.csproj",
+    "build-common": "dotnet build ./src/CommonComponents/CommonComponents.csproj",
+    "groups-service": "dotnet run --project ./src/GroupsService/GroupsService.csproj",
+    "meetings-service": "dotnet run --project ./src/MeetingsService/MeetingsService.csproj",
+    "speakers-service": "dotnet run --project ./src/SpeakersService/SpeakersService.csproj",
+    "talks-service": "dotnet run --project ./src/TalksService/TalksService.csproj",
+    "bff": "dotnet run --project ./src/SpeakerApp.BFF/SpeakerApp.BFF.csproj",
+    "web": "npm run dev --prefix ./src/SpeakerApp.Web",
+    "start-all": "npm run build-common && concurrently \"npm run groups-service\" \"npm run meetings-service\" \"npm run speakers-service\" \"npm run talks-service\" \"npm run bff\" \"npm run web\""
+  },
+  "author": "Russell Durham",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

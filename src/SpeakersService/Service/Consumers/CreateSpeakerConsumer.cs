@@ -1,19 +1,17 @@
 using MassTransit;
 using MediatR;
 using SpeakerApp.Domain.Speakers.Commands;
-using SpeakerApp.Domain.Speakers.Queries;
 using SpeakersService.App;
 
-namespace SpeakersService.Service
+namespace SpeakersService.Service.Consumers
 {
-    public class SpeakerConsumer : 
-        IConsumer<CreateSpeaker>,
-        IConsumer<GetSpeakers>
+    public class CreateSpeakerConsumer : 
+        IConsumer<CreateSpeaker>
     {
-        private readonly ILogger<SpeakerConsumer> _logger;
+        private readonly ILogger<CreateSpeakerConsumer> _logger;
         private readonly IMediator _mediator;
 
-        public SpeakerConsumer(ILogger<SpeakerConsumer> logger, IMediator mediator)
+        public CreateSpeakerConsumer(ILogger<CreateSpeakerConsumer> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
@@ -40,23 +38,6 @@ namespace SpeakersService.Service
             {
                 _logger.LogError(ex, "Error consuming CreateSpeaker");
             }
-        }
-
-        public async Task Consume(ConsumeContext<GetSpeakers> context)
-        {
-            try
-            {
-                var response = await _mediator.Send(new GetSpeakersQuery());
-
-                await context.RespondAsync<GetSpeakersResult>(response);
-
-                _logger.LogInformation("GetSpeakers consumed successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error consuming GetSpeakers");
-            }
-
         }
     }
 }

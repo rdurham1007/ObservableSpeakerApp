@@ -1,0 +1,67 @@
+name: observable-speaker-apps
+services:
+  speaker-service:
+    build:
+      context: .
+      dockerfile: src/SpeakersService/Dockerfile
+      target: final
+    ports:
+      - 5034:8080
+    environment:
+      - MassTransit__HOST=${RMQ_HOST}
+      - ConnectionStrings__DefaultConnection=Server=${SQL_HOST};Database=SpeakerApp;User Id=${SQL_USR};Password=${SQL_PWD};TrustServerCertificate=true;
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP__ENDPOINT=http://otel-collector:4317
+    develop:
+      watch:
+        - action: rebuild
+          path: src/SpeakersService
+    env_file:
+      - .env
+    networks:
+      - shared-network
+  speaker-bff:
+    build:
+      context: .
+      dockerfile: src/SpeakerApp.BFF/Dockerfile
+      target: final
+    ports:
+      - 7208:8080
+    environment:
+      - MassTransit__HOST=${RMQ_HOST}
+      - ConnectionStrings__DefaultConnection=Server=${SQL_HOST};Database=SpeakerApp;User Id=${SQL_USR};Password=${SQL_PWD};TrustServerCertificate=true;
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP__ENDPOINT=http://otel-collector:4317
+    develop:
+      watch:
+        - action: rebuild
+          path: src/SpeakerApp.BFF
+    env_file:
+      - .env
+    networks:
+      - shared-network
+  talks-service:
+    build:
+      context: .
+      dockerfile: src/TalksService/Dockerfile
+      target: final
+    ports:
+      - 5236:8080
+    environment:
+      - MassTransit__HOST=${RMQ_HOST}
+      - ConnectionStrings__DefaultConnection=Server=${SQL_HOST};Database=SpeakerApp;User Id=${SQL_USR};Password=${SQL_PWD};TrustServerCertificate=true;
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OTLP__ENDPOINT=http://otel-collector:4317
+    develop:
+      watch:
+        - action: rebuild
+          path: src/TalksService
+    env_file:
+      - .env
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    name: observablespeakers_network
+    external: true

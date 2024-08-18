@@ -9,7 +9,7 @@ export default defineConfig({
     https: true,
     proxy: {
       '/api': {
-        target: 'https://localhost:7208', // Your backend server URL
+        target: 'http://localhost:7208', // Your backend server URL
         changeOrigin: true,
         secure: false
       }
