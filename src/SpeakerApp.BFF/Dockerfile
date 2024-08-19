@@ -1,46 +1,5 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
-################################################################################
-
-# Learn about building .NET container images:
-# https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
-
-# Create a stage for building the application.
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
-
-
-COPY src/SpeakerApp.BFF/*.csproj ./source/SpeakerApp.BFF/
-COPY src/CommonComponents/*.csproj ./source/CommonComponents/
-COPY src/SpeakerApp.Domain/*.csproj ./source/SpeakerApp.Domain/
-WORKDIR /source
-
-RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet restore SpeakerApp.BFF/SpeakerApp.BFF.csproj
-
-COPY src/SpeakerApp.BFF/. ./SpeakerApp.BFF/
-COPY src/CommonComponents/. ./CommonComponents/
-COPY src/SpeakerApp.Domain/. ./SpeakerApp.Domain/
-
-
-# This is the architecture you’re building for, which is passed in by the builder.
-# Placing it here allows the previous steps to be cached across architectures.
-ARG TARGETARCH
-
-WORKDIR /source/SpeakerApp.BFF
-
-# Build the application.
-# Leverage a cache mount to /root/.nuget/packages so that subsequent builds don't have to re-download packages.
-# If TARGETARCH is "amd64", replace it with "x64" - "x64" is .NET's canonical name for this and "amd64" doesn't
-#   work in .NET 6.0.
-RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet publish SpeakerApp.BFF.csproj -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
-
 # If you need to enable globalization and time zones:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/enable-globalization.md
 ################################################################################
@@ -67,7 +26,8 @@ RUN apk add --no-cache \
     icu-libs
 
 # Copy everything needed to run the app from the "build" stage.
-COPY --from=build /app .
+#COPY --from=build /app .
+COPY src/SpeakerApp.BFF/bin/Debug/net8.0/. .
 
 # Switch to a non-privileged user (defined in the base image) that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
