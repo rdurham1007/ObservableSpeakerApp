@@ -4,6 +4,8 @@ namespace SpeakerApp.BFF;
 using CommonComponents.MassTransit;
 using MassTransit;
 using MassTransit.Logging;
+using MassTransit.Monitoring;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -30,6 +32,16 @@ public class Program
                 tracing.AddHttpClientInstrumentation();
                 tracing.AddSource(DiagnosticHeaders.DefaultListenerName);
                 tracing.AddOtlpExporter(cfg => {
+                    cfg.Endpoint = new Uri(otlpEndpoint);
+                    cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+                });
+            })
+            .WithMetrics(metrics => {
+                metrics.AddAspNetCoreInstrumentation();
+                metrics.AddHttpClientInstrumentation();
+                metrics.AddMeter(InstrumentationOptions.MeterName);
+                metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+                metrics.AddOtlpExporter(cfg => {
                     cfg.Endpoint = new Uri(otlpEndpoint);
                     cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                 });

@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using TalksService.Data;
+using OpenTelemetry.Metrics;
+using MassTransit.Monitoring;
 
 namespace TalksService;
 
@@ -42,6 +44,14 @@ public class Program
                 tracing.AddAspNetCoreInstrumentation();
                 tracing.AddSource(DiagnosticHeaders.DefaultListenerName);
                 tracing.AddOtlpExporter(cfg => {
+                    cfg.Endpoint = new Uri(otlpEndpoint);
+                    cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+                });
+            })
+            .WithMetrics(metrics => {
+                metrics.AddAspNetCoreInstrumentation();
+                metrics.AddMeter(InstrumentationOptions.MeterName);
+                metrics.AddOtlpExporter(cfg => {
                     cfg.Endpoint = new Uri(otlpEndpoint);
                     cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                 });

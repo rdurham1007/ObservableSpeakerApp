@@ -6,7 +6,7 @@
   "scripts": {
     "migrations": "dotnet run --project ./db/SpeakerApp.Migrations/SpeakerApp.Migrations.csproj",
     "web": "npm run dev --prefix ./src/SpeakerApp.Web",
-    "deploy-dev": "dotnet build && docker-compose -f compose.apps.yml --build -d",
+    "deploy-dev": "dotnet build && docker-compose -f compose.apps.yml up --build -d",
     "setup": "docker-compose -f compose.infra.yml up -d && npm install --prefix ./src/SpeakerApp.Web && npm run migrations && npm run deploy-dev"
   },
   "author": "Russell Durham",

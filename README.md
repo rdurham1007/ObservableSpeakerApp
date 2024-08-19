@@ -33,7 +33,7 @@ The infrastructure which is just supporting services such as SQL, rabbitmq, and 
 
 If you've already run the quick start, you can skip these step.
 
-`docker-compose -f compose.infra.yml -d`
+`docker-compose -f compose.infra.yml up -d`
 
 Once the SQL container is running in docker, run the following to apply migrations and preload the tables with data.
 
@@ -49,8 +49,15 @@ To deploy the containers, run the following (if you're run the quick start then 
 
 ```bash
 dotnet build
-docker-compose -f compose.apps.yml -d --build
+docker-compose -f compose.apps.yml up -d --build
 ```
+
+Alternatively, you can use the npm script
+
+```bash
+npm run deploy-dev
+```
+
 
 This will build each service and use the docker file to create a new image for it before deploying it. If you make changes to a service and want to rebuild the image then you can use the following:
 
