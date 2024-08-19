@@ -10,20 +10,25 @@ namespace SpeakerApp.BFF.Speakers
     public class SpeakerController : ControllerBase
     {
         private readonly IBus _bus;
+        private readonly IConfiguration _configuration;
 
-        public SpeakerController(IBus bus)
+        public SpeakerController(IBus bus, IConfiguration configuration)
         {
             _bus = bus;
+            _configuration = configuration;
         }
 
         [HttpGet]
         public async Task<IEnumerable<SpeakerViewModel>> GetSpeakers()
         {
-            var client = _bus.CreateRequestClient<GetSpeakers>();
 
-            var response = await client.GetResponse<GetSpeakersResult>(new { });
+            var endpoint = _configuration.GetValue<string>("SpeakerServiceEndpoint") ?? "http://localhost:5034";
 
-            return response.Message.Speakers.Select(s => new SpeakerViewModel
+            var client = new HttpClient() { BaseAddress = new Uri(endpoint) };
+            
+            var result = await client.GetFromJsonAsync<GetSpeakersResult>("api/speakers");
+
+            var speakers = result?.Speakers.Select(s => new SpeakerViewModel
             {
                 Id = s.Id,
                 FirstName = s.FirstName,
@@ -32,6 +37,8 @@ namespace SpeakerApp.BFF.Speakers
                 Bio = s.Bio,
                 CreatedAt = s.CreatedAt
             });
+
+            return speakers ?? Enumerable.Empty<SpeakerViewModel>();
         }
 
         [HttpPost]

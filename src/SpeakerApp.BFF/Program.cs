@@ -27,6 +27,7 @@ public class Program
             })
             .WithTracing(tracing => {
                 tracing.AddAspNetCoreInstrumentation();
+                tracing.AddHttpClientInstrumentation();
                 tracing.AddSource(DiagnosticHeaders.DefaultListenerName);
                 tracing.AddOtlpExporter(cfg => {
                     cfg.Endpoint = new Uri(otlpEndpoint);

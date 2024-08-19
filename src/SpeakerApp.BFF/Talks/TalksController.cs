@@ -2,6 +2,7 @@ namespace SpeakerApp.BFF.Talks
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Threading.Tasks;
     using MassTransit;
     using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,8 @@ namespace SpeakerApp.BFF.Talks
 
         [HttpPost]
         public async Task<ActionResult<CreateTalkResult>> Post(CreateEditTalkViewModel talk)
-        {
+        {            
+
             if(talk.Speaker.Id == null)
             {
                 var requestClient = _serviceBus.CreateRequestClient<CreateSpeaker>();
@@ -43,6 +45,19 @@ namespace SpeakerApp.BFF.Talks
                 });
 
                 talk.Speaker.Id = speakerResponse.Message.Id;
+            }
+
+            var activity = Activity.Current;
+
+            
+            if(activity != null)
+            {
+                activity.AddTag("talk.title", talk.Title);
+                activity.AddTag("talk.abstract", talk.Abstract);
+                activity.AddTag("talk.speakerId", talk.SpeakerId.ToString());
+
+                activity.AddBaggage("clientId", "12345");
+
             }
 
             var talkClient = _serviceBus.CreateRequestClient<CreateTalk>();

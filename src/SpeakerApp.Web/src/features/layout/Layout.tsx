@@ -18,7 +18,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <nav className="nav justify-content-end">
               <Link to="/speakers" className="nav-link">Speakers</Link>
               <Link to="/talks" className="nav-link">Talks</Link>
-              <Link to="/presentations" className="nav-link">Presentations</Link>
             </nav>
           </div>
         </div>

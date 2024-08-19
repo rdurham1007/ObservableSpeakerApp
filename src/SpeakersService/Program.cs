@@ -8,6 +8,7 @@ using MassTransit.Logging;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using SpeakersService.App;
 using SpeakersService.Data;
 
 public class Program
@@ -30,6 +31,7 @@ public class Program
 
         builder.Services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            cfg.AddOpenBehavior(typeof(TraceBehavior<,>));
         });
 
         
@@ -43,6 +45,11 @@ public class Program
             .WithTracing(tracing => {
                 tracing.AddAspNetCoreInstrumentation();
                 tracing.AddSource(DiagnosticHeaders.DefaultListenerName);
+                tracing.AddSource(SpeakerServiceActivitySource.Instance.GetActivitySource().Name);
+                tracing.AddEntityFrameworkCoreInstrumentation(cfg => {
+                    cfg.SetDbStatementForText = true;
+                    cfg.SetDbStatementForStoredProcedure = true;
+                });
                 tracing.AddOtlpExporter(cfg => {
                     cfg.Endpoint = new Uri(otlpEndpoint);
                     cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
