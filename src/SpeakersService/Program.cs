@@ -26,10 +26,15 @@ public class Program
             cfg.AddConsumers(typeof(Program).Assembly);
         });
 
-        builder.Services.AddDbContext<SpeakerDbContext>(options =>
+        builder.Services.AddDbContextPool<SpeakerDbContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
+
+        // builder.Services.AddDbContext<SpeakerDbContext>(options =>
+        // {
+        //     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        // });
 
         builder.Services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
@@ -60,11 +65,15 @@ public class Program
             .WithMetrics(metrics => {
                 metrics.AddAspNetCoreInstrumentation();
                 metrics.AddMeter(InstrumentationOptions.MeterName);
+                metrics.AddMeter("Microsoft.EntityFrameworkCore");
+                metrics.AddMeter(SpeakerServiceConstants.MeterName);
                 metrics.AddOtlpExporter(cfg => {
                     cfg.Endpoint = new Uri(otlpEndpoint);
                     cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                 });
             });
+
+        builder.Services.AddSingleton<SpeakerServiceMetrics>();
 
         builder.Services.AddControllers();
 
@@ -84,11 +93,6 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
 
         app.MapControllers();
 

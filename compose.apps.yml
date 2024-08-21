@@ -9,9 +9,10 @@ services:
       - 5034:8080
     environment:
       - MassTransit__HOST=${RMQ_HOST}
-      - ConnectionStrings__DefaultConnection=Server=${SQL_HOST};Database=SpeakerApp;User Id=${SQL_USR};Password=${SQL_PWD};TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=${SQL_HOST};Database=SpeakerApp;User Id=${SQL_USR};Password=${SQL_PWD};TrustServerCertificate=true;Pooling=true;Max Pool Size=1;
       - ASPNETCORE_ENVIRONMENT=Development
       - OTLP__ENDPOINT=http://otel-collector:4317
+      - Logging__LogLevel__Default=Information
     develop:
       watch:
         - action: rebuild

@@ -22,7 +22,7 @@ namespace SpeakerApp.BFF.Speakers
         public async Task<IEnumerable<SpeakerViewModel>> GetSpeakers()
         {
 
-            var endpoint = _configuration.GetValue<string>("SpeakerServiceEndpoint") ?? "http://localhost:5034";
+            var endpoint = _configuration.GetValue<string>("SpeakerServiceEndpoint") ?? "http://kubernetes.docker.internal:5034";
 
             var client = new HttpClient() { BaseAddress = new Uri(endpoint) };
             

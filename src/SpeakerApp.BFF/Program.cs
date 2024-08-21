@@ -27,21 +27,27 @@ public class Program
             {
                 resourceBuilder.AddService(builder.Configuration["OTLP:ServiceName"] ?? "SpeakerApp.BFF");
             })
-            .WithTracing(tracing => {
+            .WithTracing(tracing =>
+            {
                 tracing.AddAspNetCoreInstrumentation();
                 tracing.AddHttpClientInstrumentation();
                 tracing.AddSource(DiagnosticHeaders.DefaultListenerName);
-                tracing.AddOtlpExporter(cfg => {
+                tracing.AddOtlpExporter(cfg =>
+                {
                     cfg.Endpoint = new Uri(otlpEndpoint);
                     cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                 });
             })
-            .WithMetrics(metrics => {
+            .WithMetrics(metrics =>
+            {
                 metrics.AddAspNetCoreInstrumentation();
                 metrics.AddHttpClientInstrumentation();
+                metrics.AddRuntimeInstrumentation();
                 metrics.AddMeter(InstrumentationOptions.MeterName);
-                metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
-                metrics.AddOtlpExporter(cfg => {
+                //metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+                metrics.AddConsoleExporter();
+                metrics.AddOtlpExporter(cfg =>
+                {
                     cfg.Endpoint = new Uri(otlpEndpoint);
                     cfg.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                 });
@@ -60,11 +66,6 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
 
         app.MapControllers();
 

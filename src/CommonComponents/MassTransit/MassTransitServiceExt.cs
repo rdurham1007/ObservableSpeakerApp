@@ -22,12 +22,24 @@ namespace CommonComponents.MassTransit
                 cfgMassTransit?.Invoke(x);
 
 
+
                 x.UsingRabbitMq((context, cfg) =>
                 {
+
                     cfg.Host(mtOptions.Host, mtOptions.VirtualHost, h =>
                     {
                         h.Username(mtOptions.Username);
                         h.Password(mtOptions.Password);
+
+                        // uncomment this to see improved performance
+                        // when running the basic-talks k6 script
+                        
+                        // h.ConfigureBatchPublish(x =>
+                        // {
+                        //     x.Enabled = true;
+                        //     x.Timeout = TimeSpan.FromMilliseconds(2);
+                        // });
+
                     });
 
                     cfg.ConfigureEndpoints(context);

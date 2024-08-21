@@ -41,7 +41,7 @@ Any action you perform in the web app should have a corresponding trace, so you'
 - Create a talk with a new speaker
 - Observe the trace
 
-## Customer Activity (Trace)
+## Custom Activity (Trace)
 
 - Use SpeakerService
 - Use the TraceBehavior

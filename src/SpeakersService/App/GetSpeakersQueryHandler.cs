@@ -1,4 +1,7 @@
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SpeakerApp.Domain.Speakers.Queries;
 using SpeakersService.Data;
 
@@ -17,15 +20,19 @@ namespace SpeakersService.App
     public class GetSpeakersQueryHandler : IRequestHandler<GetSpeakersQuery, GetSpeakersQueryResult>
     {
         private readonly SpeakerDbContext _dbContext;
+        private readonly SpeakerServiceMetrics _metrics;
 
-        public GetSpeakersQueryHandler(SpeakerDbContext dbContext)
+        public GetSpeakersQueryHandler(SpeakerDbContext dbContext, SpeakerServiceMetrics metrics)
         {
-            _dbContext = dbContext;    
+            _dbContext = dbContext;
+            _metrics = metrics;
         }
 
-        public Task<GetSpeakersQueryResult> Handle(GetSpeakersQuery request, CancellationToken cancellationToken)
+        public async Task<GetSpeakersQueryResult> Handle(GetSpeakersQuery request, CancellationToken cancellationToken)
         {
-            var speakers = _dbContext.Speakers.Select(s => new SpeakerApp.Domain.Speakers.Speaker
+            var sw = Stopwatch.StartNew();            
+
+            var speakers = await _dbContext.Speakers.Select(s => new SpeakerApp.Domain.Speakers.Speaker
             {
                 Id = s.Id,
                 FirstName = s.FirstName,
@@ -33,9 +40,15 @@ namespace SpeakersService.App
                 Email = s.Email,
                 Bio = s.Bio,
                 CreatedAt = s.CreatedAt
-            }).ToList();
+            }).ToListAsync();
 
-            return Task.FromResult(new GetSpeakersQueryResult { Speakers = speakers });
+            sw.Stop();
+
+            _metrics.RecordGetSpeakersDbQueryDuration(sw.Elapsed.TotalMilliseconds);
+
+            Activity.Current?.SetTag("SpeakersQueryDurationMS", sw.Elapsed.TotalMilliseconds);
+
+            return new GetSpeakersQueryResult { Speakers = speakers };
         }
     }
 }
