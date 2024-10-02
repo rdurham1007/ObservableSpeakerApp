@@ -20,40 +20,48 @@ services:
       ACCEPT_EULA: "Y"
     networks:
       - shared-network
-
-  otel-collector:
-    image: otel/opentelemetry-collector:latest
+  
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
     ports:
+      - "3000:3000"
       - "4317:4317"
-      - "55680:55680"
-      - "8888:8888" 
-      - "8889:8889"
-    command: ["--config=/etc/otel-collector-config.yaml"]
-    depends_on:
-      - jaeger
     volumes:
-      - ./otel-config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
-    networks:
-      - shared-network
+      - ./data:/var/lib/grafana
 
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    restart: always
-    ports:
-      - "16686:16686"
-      - "14268"
-      - "14250"
-    networks:
-      - shared-network
+  # otel-collector:
+  #   image: otel/opentelemetry-collector:latest
+  #   ports:
+  #     - "4317:4317"
+  #     - "55680:55680"
+  #     - "8888:8888" 
+  #     - "8889:8889"
+  #   command: ["--config=/etc/otel-collector-config.yaml"]
+  #   depends_on:
+  #     - jaeger
+  #   volumes:
+  #     - ./otel-config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+  #   networks:
+  #     - shared-network
 
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./otel-config/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - shared-network
+  # jaeger:
+  #   image: jaegertracing/all-in-one:latest
+  #   restart: always
+  #   ports:
+  #     - "16686:16686"
+  #     - "14268"
+  #     - "14250"
+  #   networks:
+  #     - shared-network
+
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./otel-config/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - shared-network
 
 networks:
   shared-network:

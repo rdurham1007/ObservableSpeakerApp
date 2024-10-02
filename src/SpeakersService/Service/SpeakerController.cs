@@ -30,11 +30,13 @@ namespace SpeakersService.Service
             return Ok(response.Message);
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetSpeakers()
         {
             foreach (var header in Request.Headers)
             {
                 _logger.LogInformation("HEADER: {Key}: {Value}", header.Key, header.Value);
+                //_logger.LogInformation($"HEADER: {header.Key}: {header.Value}");
             }
 
             var result = await _mediator.Send(new GetSpeakersQuery() {});
