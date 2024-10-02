@@ -22,20 +22,14 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        var otlpEndpoint = builder.Configuration["OTLP:Endpoint"] ?? "http://localhost:4317";
+        var otlpEndpoint = builder.Configuration["OTLP:Endpoint"] ?? "http://kubernetes.docker.internal:4317";
 
         builder.Host.UseSerilog((context, services, configuration) =>
         {
             configuration
                 .Enrich.FromLogContext()
-                .WriteTo.Console(formatter: new EcsTextFormatter())
-                .WriteTo.OpenTelemetry(options => {
-                    options.Endpoint = otlpEndpoint;
-                    options.Protocol = Serilog.Sinks.OpenTelemetry.OtlpProtocol.Grpc;
-                    options.ResourceAttributes = new Dictionary<string, object> {
-                        ["service.name"] = "SpeakersService"
-                    };
-                });
+                //.WriteTo.Console(formatter: new EcsTextFormatter());
+                .WriteTo.Console();
         });
 
         builder.Services.AddServiceBus(builder.Configuration, cfg =>

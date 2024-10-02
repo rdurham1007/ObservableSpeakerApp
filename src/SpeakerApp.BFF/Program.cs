@@ -20,7 +20,7 @@ public class Program
             cfg.AddConsumers(typeof(Program).Assembly);
         });
 
-        var otlpEndpoint = builder.Configuration["OTLP:Endpoint"] ?? "http://localhost:4317";
+        var otlpEndpoint = builder.Configuration["OTLP:Endpoint"] ?? "http://kubernetes.docker.internal:4317";
 
         builder.Services.AddOpenTelemetry()
             .ConfigureResource((resourceBuilder) =>
